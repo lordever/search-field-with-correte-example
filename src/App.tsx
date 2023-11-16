@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import DropdownTextInput, {Item} from "./dropdown-text-input.component";
+import {Button} from "@mui/material";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App: React.FC = () => {
+    const [disabledButton, setDisabledButton] = useState<boolean>(true);
+    const [items, setItems] = useState<Item[]>([
+        {text: 'Jackson st. , buildNumber1', corretteIndex: 12},
+        {text: 'Mayson st. , buildNumber2', corretteIndex: 11},
+    ]);
+
+    const fetchItems = (searchText: string) => {
+        console.log('Fetching items for:', searchText);
+        // Simulate a network request
+        setTimeout(() => {
+            setItems([
+                {text: searchText, corretteIndex: 7},
+                {text: searchText + ' room2', addressId: "123"},
+            ]);
+        }, 1500); // Simulate network delay
+    };
+
+    const handleItemSelect = (item: Item) => {
+        if (item.addressId) {
+            setDisabledButton(false);
+            return;
+        }
+
+        setDisabledButton(true);
+    }
+
+    return (
+        <div className="container">
+            <DropdownTextInput onItemSelect={handleItemSelect} items={items} fetchItems={fetchItems}/>
+            <Button disabled={disabledButton} className={"button"} variant="contained" color="success">Submit</Button>
+        </div>
+    );
+};
 
 export default App;
